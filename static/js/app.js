@@ -20,4 +20,8 @@ d3.json("samples.json").then((inputFileData) => {
       .text(id);
   });
 
-});  
+   // index.html is loaded with the first value of subject_ids (in this case 940)
+  optionChanged(subject_ids[0]);
+
+});
+
