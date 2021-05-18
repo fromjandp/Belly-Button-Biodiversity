@@ -1,15 +1,13 @@
-// Map to the dataset name identified as id="selDataset" in the .html code
+// Map to the dataset name identified as id="selDataset" in the index.html code
 var select_tag = d3.select("#selDataset");
 
 // Import the data, from the json file, into the javascript code for use.
 d3.json("./static/data/samples.json").then((inputFileData) => {
-  console.log("inputFileData: ")
-  console.log(inputFileData)
+  console.log("inputFileData: ");
+  console.log(inputFileData);
 
   // dump the input id numbers (names) into subject_ids
   var subject_ids = inputFileData.names;
-  // var subject_ids = inputFileData["names"];
-  //.log(`Subject_Ids: ${subject_ids} `);
   console.log("Subject_Ids: ");
   console.log(subject_ids);
 
@@ -23,7 +21,6 @@ d3.json("./static/data/samples.json").then((inputFileData) => {
   // The initial value  is set to the first value for the 'test subject ID no' o the
   // dashboard. In this case, it would be 940 based on the data showing in ascending order.
   optionChanged(subject_ids[0]);
-
 });
 
 // The function is triggered by an option change in the Dropdown box of "Test Subject ID No" in index.html
@@ -42,31 +39,28 @@ function optionChanged(selected_id) {
     // **************************************************************
 
     var samples = data.samples;
-    var results = samples.filter(sampleObj => sampleObj.id == selected_id);
-
     console.log("samples: ");
     console.log(samples);
 
-    var result = results[0];
-
+    var results = samples.filter(sampleObj => sampleObj.id == selected_id);
     console.log("results: ");
     console.log(results);
 
+    var result = results[0];
     console.log("result: ");
     console.log(result);
 
     var otu_ids = result.otu_ids;
     var otu_labels = result.otu_labels;
+
     var sample_values = result.sample_values;
-
-    var y_label = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
-
-    console.log("y_label: ");
-    console.log(y_label);
-
     console.log("sample_values: ");
     console.log(sample_values.slice(0, 10).reverse());
 
+    var y_label = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
+    console.log("y_label: ");
+    console.log(y_label);
+ 
     var bar_trace = {
       y: y_label,
       x: sample_values.slice(0, 10).reverse(),
@@ -131,14 +125,34 @@ function optionChanged(selected_id) {
     Plotly.newPlot("bubble", [bubble_trace], bubble_layout);
   });
 
+  // ****************
   // Demographic info
+  // ****************
+
+  // Import the metadata, from the json file, into the javascript code for use.
   d3.json("./static/data/samples.json").then((data) => {
     var metadata = data.metadata;
-
     console.log("metadata");
     console.log(metadata);
 
-  
-  });
+    var results = metadata.filter(metadataObj => metadataObj.id == selected_id);
+    console.log("results");
+    console.log(results);
 
-};
+    var result = results[0];
+    console.log("result");
+    console.log(result);
+
+    // Map to the dataset name identified as id="sample-metadata" in the index.html code
+    var fig = d3.select("#sample-metadata");
+
+    //Initialize the demographics fig area before loading the key and values for display
+    fig.html("");
+
+    // Display the demographic values
+    Object.entries(results[0]).forEach(([key, value]) => {
+      fig.append("h5").text(`${key}: ${value}`);
+    });
+
+  });
+}
