@@ -14,12 +14,12 @@ d3.json("./static/data/samples.json").then((inputFileData) => {
   console.log(subject_ids);
 
   subject_ids.map((id) => {
-  select_tag
+    select_tag
       .append("option")
       .property("value", id)
       .text(id);
   });
-  
+
   // The initial value  is set to the first value for the 'test subject ID no' o the
   // dashboard. In this case, it would be 940 based on the data showing in ascending order.
   optionChanged(subject_ids[0]);
@@ -83,7 +83,7 @@ function optionChanged(selected_id) {
     };
 
     Plotly.newPlot("bar", data, bar_layout);
-  
+
     // **************************************************************
     // Create a bubble chart that displays each sample.
     // 'x' values     - "otu_ids" 
@@ -131,6 +131,14 @@ function optionChanged(selected_id) {
     Plotly.newPlot("bubble", [bubble_trace], bubble_layout);
   });
 
+  // Demographic info
+  d3.json("./static/data/samples.json").then((data) => {
+    var metadata = data.metadata;
+
+    console.log("metadata");
+    console.log(metadata);
 
   
-}; 
+  });
+
+};
