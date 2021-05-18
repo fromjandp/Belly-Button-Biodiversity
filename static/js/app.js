@@ -33,11 +33,13 @@ function optionChanged(selected_id) {
   console.log("selected_id=", selected_id);
 
   d3.json("./static/data/samples.json").then((data) => {
-    //   Create a horizontal bar chart with a dropdown menu 
-    //   to display the top 10 OTUs found in that individual.
-    //   "sample_values" - values for the bar chart.
-    //   "otu_ids"       - values for the labels for the bar chart.
-    //   "otu_labels"    - values for the hovertext for the chart.
+    // **************************************************************
+    // Create a horizontal bar chart with a dropdown menu 
+    // to display the top 10 OTUs found in that individual.
+    // "sample_values" - values for the bar chart.
+    // "otu_ids"       - values for the labels for the bar chart.
+    // "otu_labels"    - values for the hovertext for the chart.
+    // **************************************************************
 
     var samples = data.samples;
     var results = samples.filter(sampleObj => sampleObj.id == selected_id);
@@ -81,6 +83,54 @@ function optionChanged(selected_id) {
     };
 
     Plotly.newPlot("bar", data, bar_layout);
+  
+    // **************************************************************
+    // Create a bubble chart that displays each sample.
+    // 'x' values     - "otu_ids" 
+    // 'y' values     - "sample_values" 
+    //  marker size   - "sample_values" 
+    //  marker colors - "otu_ids"      
+    //  text values   - "otu_labels"    
+    //  **************************************************************
 
-  }); 
+    var results = samples.filter(sampleObj => sampleObj.id == selected_id);
+    var result = results[0];
+
+    var otu_ids = result.otu_ids;
+    console.log("otu_ids: ");
+    console.log(otu_ids);
+
+    var otu_labels = result.otu_labels;
+    console.log("otu_labels: ");
+    console.log(otu_labels);
+
+    var sample_values = result.sample_values;
+    console.log("samples_values: ");
+    console.log(sample_values);
+
+    var bubble_trace = {
+      x: otu_ids,
+      y: sample_values,
+      text: otu_labels,
+      mode: "markers",
+      marker: {
+        size: sample_values,
+        color: otu_ids,
+        colorscale: "Earth"
+      }
+    };
+
+    var data = [bubble_trace];
+
+    var bubble_layout = {
+      hovermode: "closest",
+      xaxis: { title: "OTU ID" },
+      margin: { t: 30 }
+    };
+
+    Plotly.newPlot("bubble", [bubble_trace], bubble_layout);
+  });
+
+
+  
 }; 
